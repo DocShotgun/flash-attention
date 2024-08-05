@@ -87,19 +87,20 @@ jobs:
       - name: Build Wheel
         id: build-wheel
         run: |
-          $rocmVersion = ${{ matrix.rocm }}
-          $packageVersion = $env:PCKGVER.TrimStart('v')
-          
-          $env:MAX_JOBS = '1'
-          $env:FLASH_ATTENTION_FORCE_BUILD = 'TRUE'
-          $env:FLASH_ATTENTION_FORCE_CXX11_ABI = 'FALSE'
-          $env:BUILD_TARGET = "rocm"
+          rocm_version="${{ matrix.rocm }}"
+          package_version="${PCKGVER#v}"
+
+          export MAX_JOBS=1
+          export FLASH_ATTENTION_FORCE_BUILD=TRUE
+          export FLASH_ATTENTION_FORCE_CXX11_ABI=FALSE
+          export BUILD_TARGET=rocm
 
           python3 setup.py bdist_wheel --dist-dir=dist
-          
-          $wheel = (gi '.\dist\*.whl')[0]
-          $wheelname = $wheel.name.replace("flash_attn-$packageVersion-","flash_attn-$packageVersion+rocm$rocmVersion"+"torch${{ matrix.torchver }}cxx11abiFALSE-")
-          Move-Item $wheel.fullname ".\dist\$wheelname"
+
+          wheel=$(ls ./dist/*.whl)
+          wheel_name=$(basename "$wheel")
+          new_wheel_name="${wheel_name//flash_attn-$package_version-/flash_attn-$package_version+rocm$rocm_version+torch${{ matrix.torchver }}cxx11abiFALSE-}"
+          mv "$wheel" "./dist/$new_wheel_name"
 
       - uses: actions/upload-artifact@v3
         with:
