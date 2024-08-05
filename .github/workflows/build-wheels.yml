@@ -94,6 +94,7 @@ jobs:
           export FLASH_ATTENTION_FORCE_BUILD=TRUE
           export FLASH_ATTENTION_FORCE_CXX11_ABI=FALSE
           export BUILD_TARGET=rocm
+          export GPU_ARCHS="gfx942"
 
           python3 setup.py bdist_wheel --dist-dir=dist
 
