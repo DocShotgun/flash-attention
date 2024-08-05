@@ -90,7 +90,7 @@ jobs:
           rocm_version="${{ matrix.rocm }}"
           package_version="${PCKGVER#v}"
 
-          export MAX_JOBS=1
+          export MAX_JOBS=4
           export FLASH_ATTENTION_FORCE_BUILD=TRUE
           export FLASH_ATTENTION_FORCE_CXX11_ABI=FALSE
           export BUILD_TARGET=rocm
