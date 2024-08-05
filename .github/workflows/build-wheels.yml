@@ -27,8 +27,8 @@ jobs:
       fail-fast: false
       matrix:
         pyver: ["3.10"]
-        rocm: ["6.1"]
-        torchver: ["2.1.2"]
+        rocm: ["6.0"]
+        torchver: ["2.3.1"]
     defaults:
       run:
         shell: bash
