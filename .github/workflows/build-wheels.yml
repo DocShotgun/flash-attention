@@ -87,7 +87,7 @@ jobs:
       - name: Build Wheel
         id: build-wheel
         run: |
-          $rocmVersion = $env:ROCMVER.Remove($env:ROCMVER.LastIndexOf('.')).Replace('.','')
+          $rocmVersion = ${{ matrix.rocm }}
           $packageVersion = $env:PCKGVER.TrimStart('v')
           
           $env:MAX_JOBS = '1'
@@ -98,7 +98,7 @@ jobs:
           python3 setup.py bdist_wheel --dist-dir=dist
           
           $wheel = (gi '.\dist\*.whl')[0]
-          $wheelname = $wheel.name.replace("flash_attn-$packageVersion-","flash_attn-$packageVersion+cu$rocmVersion"+"torch${{ matrix.torchver }}cxx11abiFALSE-")
+          $wheelname = $wheel.name.replace("flash_attn-$packageVersion-","flash_attn-$packageVersion+rocm$rocmVersion"+"torch${{ matrix.torchver }}cxx11abiFALSE-")
           Move-Item $wheel.fullname ".\dist\$wheelname"
 
       - uses: actions/upload-artifact@v3
