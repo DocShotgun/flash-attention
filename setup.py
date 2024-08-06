@@ -367,6 +367,9 @@ elif not SKIP_CUDA_BUILD and IS_ROCM:
                 "-DCK_USE_XDL",
                 "-DUSE_PROF_API=1",
                 "-D__HIP_PLATFORM_HCC__=1",
+                "-DFLASHATTENTION_DISABLE_ALIBI",
+                "-DFLASHATTENTION_DISABLE_SOFTCAP",
+                "-DFLASHATTENTION_DISABLE_UNEVEN_K",
                 # "-DFLASHATTENTION_DISABLE_BACKWARD",
             ]
             + generator_flag
