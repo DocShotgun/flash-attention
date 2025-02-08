@@ -91,7 +91,8 @@ jobs:
           $env:FLASH_ATTENTION_FORCE_BUILD = 'TRUE'
           $env:FLASH_ATTENTION_FORCE_CXX11_ABI = 'FALSE'
           $env:BUILD_TARGET = "cuda"
-
+          
+          git config --system core.longpaths true
           python setup.py bdist_wheel --dist-dir=dist
           
           $wheel = (gi '.\dist\*.whl')[0]
