@@ -37,9 +37,12 @@ jobs:
         PCKGVER: ${{ inputs.version }}
 
     steps:
+      - name: Configure Git long paths
+        run: git config --system core.longpaths true
+        
       - uses: actions/checkout@v4
-        #with:
-        #  submodules: 'recursive'
+        with:
+          submodules: 'recursive'
 
       - uses: actions/setup-python@v4
         with:
