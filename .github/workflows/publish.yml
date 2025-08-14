@@ -29,14 +29,14 @@ jobs:
     steps:
       - name: Determine Release Version
         id: determine_version
+        if: "${{ github.event_name == 'workflow_dispatch' }}"
         run: |
-          if: "${{ github.event_name == 'workflow_dispatch' }}"
           echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
 
       - name: Determine Release Version (Tag)
         id: determine_version_tag
+        if: "${{ github.event_name == 'create' }}"
         run: |
-          if: "${{ github.event_name == 'create' }}"
           echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
         shell: bash # Ensure bash for GITHUB_REF_NAME
 
