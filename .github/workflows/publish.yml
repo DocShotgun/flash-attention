@@ -47,7 +47,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.determine_version.outputs.version || steps.determine_version_tag.outputs.version }}
-          release_name: Release ${{ steps.determine_version.outputs.version || steps.determine_version_tag.outputs.version }}
+          release_name: ${{ steps.determine_version.outputs.version || steps.determine_version_tag.outputs.version }}
 
   build_wheels:
     name: Build Wheel
