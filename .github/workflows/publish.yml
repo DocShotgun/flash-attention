@@ -8,6 +8,13 @@
 name: Build wheels and deploy
 
 on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag to release: (format: v2.3.4)'
+        default: 'v2.3.4'
+        required: true
+        type: string
   create:
     tags:
       - v*
@@ -17,11 +24,21 @@ jobs:
   setup_release:
     name: Create Release
     runs-on: ubuntu-latest
+    outputs:
+      release_version: ${{ steps.determine_version.outputs.version }}
     steps:
-      - name: Get the tag version
-        id: extract_branch
-        run: echo ::set-output name=branch::${GITHUB_REF#refs/tags/}
-        shell: bash
+      - name: Determine Release Version
+        id: determine_version
+        run: |
+          if: "${{ github.event_name == 'workflow_dispatch' }}"
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+
+      - name: Determine Release Version (Tag)
+        id: determine_version_tag
+        run: |
+          if: "${{ github.event_name == 'create' }}"
+          echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+        shell: bash # Ensure bash for GITHUB_REF_NAME
 
       - name: Create Release
         id: create_release
@@ -29,8 +46,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.extract_branch.outputs.branch }}
-          release_name: ${{ steps.extract_branch.outputs.branch }}
+          tag_name: ${{ steps.determine_version.outputs.version || steps.determine_version_tag.outputs.version }}
+          release_name: Release ${{ steps.determine_version.outputs.version || steps.determine_version_tag.outputs.version }}
 
   build_wheels:
     name: Build Wheel
@@ -60,6 +77,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.setup_release.outputs.release_version }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
